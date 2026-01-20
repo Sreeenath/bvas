@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,8 @@ public class DistrictController {
 
 
     @GetMapping("/bills/pending")
+    @Transactional(readOnly = true)
+
     public ResponseEntity<ApiResponse<List<BillResponse>>> getPendingBills(Authentication authentication) {
         User verifier = userService.findByUsername(authentication.getName());
         
@@ -44,12 +47,15 @@ public class DistrictController {
     }
 
     @GetMapping("/bills/{id}")
+    @Transactional(readOnly = true)
+
     public ResponseEntity<ApiResponse<BillResponse>> getBill(@PathVariable Long id) {
         Bill bill = billService.getBillById(id);
         return ResponseEntity.ok(ApiResponse.success(convertToResponse(bill)));
     }
 
     @PostMapping("/bills/approve")
+    
     public ResponseEntity<ApiResponse<BillResponse>> approveBill(
             @Valid @RequestBody BillApprovalRequest request,
             Authentication authentication) {

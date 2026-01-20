@@ -25,8 +25,12 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
            "(SELECT d FROM b.vendor.assignedDistricts d WHERE d.id = :districtId)")
     List<Bill> findByStatusAndDistrict(@Param("status") BillStatus status, @Param("districtId") Long districtId);
     
-    @Query("SELECT b FROM Bill b JOIN b.vendor.assignedDistricts d WHERE d.id = :districtId AND b.status = :status")
-    List<Bill> findPendingBillsByDistrict(@Param("districtId") Long districtId, @Param("status") BillStatus status);
+   @Query("SELECT DISTINCT b FROM Bill b " +
+       "JOIN b.billItems bi " +
+       "JOIN bi.district d " +
+       "WHERE d.id = :districtId AND b.status = :status")
+    List<Bill> findPendingBillsByDistrict(@Param("districtId") Long districtId,
+                                      @Param("status") BillStatus status);
     
     @Query("SELECT b FROM Bill b WHERE b.billMonth = :month AND b.billYear = :year")
     List<Bill> findByMonthAndYear(@Param("month") Integer month, @Param("year") Integer year);

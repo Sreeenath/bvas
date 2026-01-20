@@ -56,6 +56,7 @@ public class VendorController {
     }
 
     @GetMapping("/bills")
+    @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse<List<BillResponse>>> getMyBills(Authentication authentication) {
         User vendor = userService.findByUsername(authentication.getName());
         List<Bill> bills = billService.getBillsByVendor(vendor);
@@ -65,6 +66,7 @@ public class VendorController {
     }
 
     @GetMapping("/bills/{id}")
+    @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse<BillResponse>> getBill(@PathVariable Long id, Authentication authentication) {
         User vendor = userService.findByUsername(authentication.getName());
         Bill bill = billService.getBillById(id);
