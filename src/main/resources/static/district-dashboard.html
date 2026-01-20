@@ -1,0 +1,47 @@
+<!-- src/main/resources/static/district-dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BVAS - District Verifier Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="navbar">
+            <div class="logo">BVAS - District Verifier Portal</div>
+            <div class="user-info">
+                <span id="userInfo"></span>
+                <button class="btn-logout" onclick="authAPI.logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div id="alertContainer"></div>
+        
+        <div class="card">
+            <div class="card-header">Pending Bills for Verification</div>
+            <div id="billsTableContainer">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bill Details Modal -->
+    <div id="billDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Bill Details</h2>
+                <button class="close" onclick="closeModal('billDetailsModal')">&times;</button>
+            </div>
+            <div id="billDetailsContent"></div>
+        </div>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/district.js"></script>
+</body>
+</html>

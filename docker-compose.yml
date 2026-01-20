@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: bvas-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: bvasdb
+      MYSQL_USER: bvasuser
+      MYSQL_PASSWORD: bvaspass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - bvas-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # BVAS Application
+  bvas-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bvas-app
+    ports:
+      - "8080:8080"
+    environment:
+      # Activate Docker profile
+      - SPRING_PROFILES_ACTIVE=docker
+      # Database
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/bvasdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=false
+      # Server
+      - SERVER_PORT=8080
+      # JWT
+      - JWT_SECRET=M2N5K3F3Z0NQeG1pY2lqb09pUWV5Yk4zV3lZZGhFMW5NcW9sRw==
+      - JWT_EXPIRATION=86400000
+      # OTP (using Spring Boot relaxed binding: OTP_DEFAULT -> otp.default)
+      - OTP_DEFAULT=123456
+      - OTP_EXPIRY_SECONDS=300
+      # File uploads
+      - FILE_UPLOAD_DIR=/app/uploads
+      # Dummy services
+      - AADHAAR_ESIGN_DUMMY_ENABLED=true
+      - EPOS_DUMMY_ENABLED=true
+      - EMAIL_DUMMY_ENABLED=true
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - bvas-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  bvas-network:
+    driver: bridge

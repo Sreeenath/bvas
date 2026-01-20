@@ -1,0 +1,98 @@
+<!-- src/main/resources/static/vendor-dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BVAS - Vendor Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="navbar">
+            <div class="logo">BVAS - Vendor Portal</div>
+            <div class="user-info">
+                <span id="userInfo"></span>
+                <button class="btn-logout" onclick="authAPI.logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="d-flex gap-2 mb-3">
+            <button class="btn btn-primary" onclick="showSubmitBill()">Submit New Bill</button>
+            <button class="btn btn-secondary" onclick="loadBills()">Refresh</button>
+        </div>
+        
+        <div id="alertContainer"></div>
+        
+        <!-- Bills List -->
+        <div class="card">
+            <div class="card-header">My Bills</div>
+            <div id="billsTableContainer">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Submit Bill Modal -->
+    <div id="submitBillModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Submit New Bill</h2>
+                <button class="close" onclick="closeModal('submitBillModal')">&times;</button>
+            </div>
+            <form id="submitBillForm">
+                <div class="form-group">
+                    <label class="form-label">Bill Month</label>
+                    <select class="form-select" id="billMonth" required>
+                        <option value="">Select Month</option>
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bill Year</label>
+                    <input type="number" class="form-control" id="billYear" min="2020" max="2100" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Remarks</label>
+                    <textarea class="form-control" id="vendorRemarks" rows="3"></textarea>
+                </div>
+                
+                <h3 class="mt-3 mb-2">District-wise Quantities</h3>
+                <div id="billItemsContainer"></div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addBillItem()">Add District</button>
+                
+                <div class="form-group mt-3">
+                    <label class="form-label">Upload Documents (PDF/XLSX, Max 15MB)</label>
+                    <div class="file-upload-area" onclick="document.getElementById('billFiles').click()">
+                        <p>Click to upload or drag and drop</p>
+                        <input type="file" id="billFiles" multiple accept=".pdf,.xlsx,.xls" style="display: none;" onchange="handleFileSelect(event)">
+                        <div id="fileList"></div>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">Submit Bill</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('submitBillModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/vendor.js"></script>
+</body>
+</html>

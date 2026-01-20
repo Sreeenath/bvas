@@ -1,0 +1,115 @@
+<!-- src/main/resources/static/admin-dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BVAS - Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="navbar">
+            <div class="logo">BVAS - HQ Admin Portal</div>
+            <div class="user-info">
+                <span id="userInfo"></span>
+                <button class="btn-logout" onclick="authAPI.logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div id="alertContainer"></div>
+        
+        <!-- Dashboard KPIs -->
+        <div id="kpiContainer" class="kpi-grid"></div>
+        
+        <!-- Tabs -->
+        <div class="card">
+            <div class="d-flex gap-2 mb-3">
+                <button class="btn btn-primary" onclick="showTab('users')">User Management</button>
+                <button class="btn btn-primary" onclick="showTab('submissionWindows')">Submission Windows</button>
+                <button class="btn btn-primary" onclick="showTab('auditLogs')">Audit Logs</button>
+            </div>
+            
+            <!-- Users Tab -->
+            <div id="usersTab" class="tab-content">
+                <div class="d-flex gap-2 mb-3">
+                    <button class="btn btn-success" onclick="showCreateUserModal()">Create User</button>
+                    <button class="btn btn-secondary" onclick="loadUsers()">Refresh</button>
+                </div>
+                <div id="usersTableContainer"></div>
+            </div>
+            
+            <!-- Submission Windows Tab -->
+            <div id="submissionWindowsTab" class="tab-content d-none">
+                <div class="d-flex gap-2 mb-3">
+                    <button class="btn btn-primary" onclick="showSubmissionWindowModal()">Manage Window</button>
+                </div>
+                <div id="submissionWindowsContainer"></div>
+            </div>
+            
+            <!-- Audit Logs Tab -->
+            <div id="auditLogsTab" class="tab-content d-none">
+                <div id="auditLogsContainer"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create User Modal -->
+    <div id="createUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create User</h2>
+                <button class="close" onclick="closeModal('createUserModal')">&times;</button>
+            </div>
+            <form id="createUserForm">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" id="userUsername" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="userPassword" required minlength="8">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="userFullName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="userEmail">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mobile Number</label>
+                    <input type="tel" class="form-control" id="userMobile" pattern="[0-9]{10}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-select" id="userRole" required>
+                        <option value="">Select Role</option>
+                        <option value="VENDOR">Vendor</option>
+                        <option value="DISTRICT_VERIFIER">District Verifier</option>
+                        <option value="HQ_ADMIN">HQ Admin</option>
+                    </select>
+                </div>
+                <div class="form-group" id="districtSelectionGroup" style="display: none;">
+                    <label class="form-label">Assign Districts <span style="color: red;">*</span></label>
+                    <div id="districtCheckboxes" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); padding: 1rem; border-radius: 4px; background-color: var(--light-color);">
+                        <div class="spinner" style="width: 30px; height: 30px;"></div>
+                    </div>
+                    <small class="text-secondary">Select one or more districts. District Verifiers can only see bills from their assigned districts.</small>
+                </div>
+                <div class="d-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('createUserModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/js/api.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+</html>
